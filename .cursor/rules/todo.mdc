@@ -1,0 +1,123 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+
+**checklist clara y completa** para integrar `expo-libsignal` en una app Expo, partiendo de que ya tienes el `.aar` compilado de `libsignal-client`.
+
+---
+
+## ✅ Checklist: Usar `expo-libsignal` en una app Expo vacía (con `.aar` listo)
+
+### 🔧 1. Crear y preparar el módulo `expo-libsignal`
+
+* [ ] Crear el módulo si aún no existe:
+
+  ```bash
+  npx create-expo-module expo-libsignal
+  ```
+
+* [ ] Mover el archivo `libsignal-client.aar` a:
+
+  ```
+  expo-libsignal/android/libs/libsignal-client.aar
+  ```
+
+* [ ] En `expo-libsignal/android/build.gradle`:
+
+  * Asegúrate de incluir:
+
+    ```groovy
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+    ```
+  * Y en `dependencies`:
+
+    ```groovy
+    implementation(name: 'libsignal-client', ext: 'aar')
+    ```
+
+* [ ] Implementar tu módulo Kotlin (ejemplo básico):
+
+```kotlin
+// ExpoLibSignalModule.kt
+import expo.modules.kotlin.modules.Module
+import expo.modules.kotlin.modules.ModuleDefinition
+import expo.modules.kotlin.Promise
+import org.signal.libsignal.util.KeyHelper
+import android.util.Base64
+
+class ExpoLibSignalModule : Module() {
+  override fun definition() = ModuleDefinition {
+    name("ExpoLibSignal")
+
+    asyncFunction("generateKeyPair") { promise: Promise ->
+      val keyPair = KeyHelper.generateIdentityKeyPair()
+      val publicKey = Base64.encodeToString(keyPair.publicKey.serialize(), Base64.NO_WRAP)
+      val privateKey = Base64.encodeToString(keyPair.privateKey.serialize(), Base64.NO_WRAP)
+      promise.resolve(mapOf("publicKey" to publicKey, "privateKey" to privateKey))
+    }
+  }
+}
+```
+
+---
+
+### 📦 2. Incluir el módulo en tu app Expo
+
+#### a) Desde el mismo monorepo:
+
+* [ ] Asegúrate de que `expo-libsignal` está en la raíz o accesible como dependencia local.
+
+```bash
+# desde tu app de Expo
+yarn add ../expo-libsignal
+```
+
+#### b) O desde Git (si lo tienes en un repo privado):
+
+```bash
+yarn add git+ssh://git@github.com/tu-usuario/expo-libsignal.git
+```
+
+---
+
+### 🧪 3. Configurar `expo-dev-client`
+
+* [ ] Añadir `expo-dev-client` a tu app:
+
+```bash
+npx expo install expo-dev-client
+```
+
+* [ ] Ejecutar la app en Android:
+
+```bash
+npx expo run:android
+```
+
+---
+
+### 🧪 4. Usar el módulo en JS/TS
+
+```ts
+import { generateKeyPair } from 'expo-libsignal'
+
+const keys = await generateKeyPair()
+console.log('Public:', keys.publicKey)
+console.log('Private:', keys.privateKey)
+```
+
+---
+
+### 🛠️ 5. Debug y validación
+
+* [ ] Revisa que el módulo se cargue correctamente (`console.log` de las claves)
+* [ ] Asegúrate de que `libsignal-client.aar` no da errores de linker al compilar
+
+---
+

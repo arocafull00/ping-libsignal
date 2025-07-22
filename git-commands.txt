@@ -1,0 +1,15 @@
+# Execute these commands in order to fix the Git LFS issue:
+
+# 1. Remove the embedded git repository
+rm -rf modules/ping-libsignal/.git
+
+# 2. Add all files including the updated .gitignore and .gitattributes
+git add .gitignore
+git add .gitattributes
+git add -A
+
+# 3. Commit the changes
+git commit -m "Configure Git LFS for large AAR files"
+
+# 4. Push to repository
+git push --set-upstream origin main 
