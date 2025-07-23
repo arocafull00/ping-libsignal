@@ -136,7 +136,6 @@ android/**/.cxx/
 android/local.properties
 android/*.iml
 android/*.hprof
-android/**/app/src/main/res/*
 
 # iOS specific
 ios/build/
