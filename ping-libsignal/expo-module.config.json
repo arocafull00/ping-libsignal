@@ -1,0 +1,15 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["PingLibsignalModule"]
+  },
+  "android": {
+    "gradleAarProjects": [
+      {
+        "name": "libsignal-client",
+        "aarFilePath": "android/libs/libsignal-client.aar"
+      }
+    ],
+    "modules": ["expo.modules.pinglibsignal.PingLibsignalModule"]
+  }
+}

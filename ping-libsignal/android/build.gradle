@@ -1,0 +1,57 @@
+apply plugin: 'com.android.library'
+
+group = 'expo.modules.pinglibsignal'
+version = '0.7.2'
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
+apply from: expoModulesCorePlugin
+applyKotlinExpoModulesCorePlugin()
+useCoreDependencies()
+useExpoPublishing()
+
+// Si vas a usar SDKs gestionados por Expo
+def useManagedAndroidSdkVersions = false
+if (useManagedAndroidSdkVersions) {
+  useDefaultAndroidSdkVersions()
+} else {
+  buildscript {
+    ext.safeExtGet = { prop, fallback ->
+      rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+    }
+  }
+  project.android {
+    compileSdkVersion safeExtGet("compileSdkVersion", 34)
+    defaultConfig {
+      minSdkVersion safeExtGet("minSdkVersion", 21)
+      targetSdkVersion safeExtGet("targetSdkVersion", 34)
+    }
+  }
+}
+
+android {
+  namespace "expo.modules.pinglibsignal"
+  defaultConfig {
+    versionCode 1
+    versionName "0.7.2"
+  }
+  lintOptions {
+    abortOnError false
+  }
+}
+
+// 👇 Añade las dependencias para el .aar y sus requisitos
+dependencies {
+  implementation fileTree(dir: 'libs', include: ['*.aar'])
+  implementation 'org.whispersystems:signal-protocol-android:2.2.0'
+
+  // Dependencias requeridas por libsignal
+  implementation 'org.whispersystems:signal-protocol-java:2.8.1'
+  implementation 'androidx.annotation:annotation:1.5.0'
+  implementation 'androidx.core:core-ktx:1.9.0'
+}
