@@ -150,4 +150,10 @@ modules/*/node_modules/
 modules/*/build/
 modules/*/dist/
 
+# ping-libsignal Android build exclusions
+modules/ping-libsignal/android/.gradle/
+modules/ping-libsignal/android/.ide/
+modules/ping-libsignal/android/build/
+modules/ping-libsignal/android/libs/
+
 # @end expo-cli
