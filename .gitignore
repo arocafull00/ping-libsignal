@@ -6,9 +6,7 @@ expo-env.d.ts
 node_modules/
 # *.aar - Commented out to allow Git LFS to handle AAR files
 *.xml
-android/
 build/
-ios/
 .expo/
 .expo-shared/
 .expo-shared/
