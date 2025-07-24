@@ -10,6 +10,8 @@ export default function TestScreen() {
   const [piValue, setPiValue] = useState<number | null>(null);
   const [helloResult, setHelloResult] = useState<string>('');
   const [libSignalResult, setLibSignalResult] = useState<{ pub: string; priv: string } | null>(null);
+  const [preKeysResult, setPreKeysResult] = useState<{ preKeys: string[] } | null>(null);
+  const [signedPreKeyResult, setSignedPreKeyResult] = useState<{ signedPreKey: string } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -41,6 +43,40 @@ export default function TestScreen() {
       setLibSignalResult(result);
     } catch (error) {
       Alert.alert('LibSignal Error', `Failed to test LibSignal: ${error}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const testPreKeys = async () => {
+    setIsLoading(true);
+    setPreKeysResult(null);
+    
+    try {
+      const result = await pingLibsignal.generatePreKeys(5);
+      setPreKeysResult(result);
+    } catch (error) {
+      Alert.alert('PreKeys Error', `Failed to generate PreKeys: ${error}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const testSignedPreKey = async () => {
+    if (!libSignalResult) {
+      Alert.alert('Error', 'Please generate identity keys first');
+      return;
+    }
+    
+    setIsLoading(true);
+    setSignedPreKeyResult(null);
+    
+    try {
+      // Use the private key from the identity key pair for signing
+      const result = await pingLibsignal.generateSignedPreKey(libSignalResult.priv);
+      setSignedPreKeyResult(result);
+    } catch (error) {
+      Alert.alert('Signed PreKey Error', `Failed to generate Signed PreKey: ${error}`);
     } finally {
       setIsLoading(false);
     }
@@ -88,6 +124,16 @@ export default function TestScreen() {
           onPress={testLibSignal}
           disabled={isLoading}
         />
+        <TestButton 
+          title="Generate PreKeys" 
+          onPress={testPreKeys}
+          disabled={isLoading}
+        />
+        <TestButton 
+          title="Generate Signed PreKey" 
+          onPress={testSignedPreKey}
+          disabled={isLoading || !libSignalResult}
+        />
       </View>
       
       {libSignalResult && (
@@ -99,6 +145,32 @@ export default function TestScreen() {
               <Text style={styles.keyValue}>{libSignalResult.pub}</Text>
               <Text style={styles.keyText}>Private Key:</Text>
               <Text style={styles.keyValue}>{libSignalResult.priv}</Text>
+            </View>
+          }
+        />
+      )}
+
+      {preKeysResult && (
+        <ResultCard 
+          title="PreKeys Result" 
+          content={
+            <View>
+              <Text style={styles.keyText}>Generated {preKeysResult.preKeys.length} PreKeys:</Text>
+              {preKeysResult.preKeys.map((key, index) => (
+                <Text key={index} style={styles.keyValue}>PreKey {index + 1}: {key}</Text>
+              ))}
+            </View>
+          }
+        />
+      )}
+
+      {signedPreKeyResult && (
+        <ResultCard 
+          title="Signed PreKey Result" 
+          content={
+            <View>
+              <Text style={styles.keyText}>Signed PreKey:</Text>
+              <Text style={styles.keyValue}>{signedPreKeyResult.signedPreKey}</Text>
             </View>
           }
         />
@@ -165,22 +237,26 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'center',
     width: '100%',
     marginVertical: 24,
+    gap: 12,
   },
   button: {
     backgroundColor: '#3b82f6',
-    paddingHorizontal: 32,
-    paddingVertical: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
     borderRadius: 12,
-    minWidth: 140,
+    minWidth: 120,
     alignItems: 'center',
     shadowColor: '#3b82f6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
+    marginHorizontal: 4,
+    marginVertical: 4,
   },
   buttonDisabled: {
     backgroundColor: '#cbd5e1',

@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "android"],
+  "ios": {
+    "modules": ["PingLibsignalModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.pinglibsignal.PingLibsignalModule"]
+  }
+}

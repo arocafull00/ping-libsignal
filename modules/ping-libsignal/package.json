@@ -1,0 +1,33 @@
+{
+  "name": "ping-libsignal",
+  "version": "1.0.0",
+  "description": "React Native/Expo module for libsignal integration",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "build": "expo-module build",
+    "clean": "expo-module clean",
+    "lint": "expo-module lint",
+    "test": "expo-module test",
+    "prepare": "expo-module prepare",
+    "prepublishOnly": "expo-module prepublishOnly",
+    "expo-module": "expo-module"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "libsignal",
+    "signal-protocol",
+    "encryption"
+  ],
+  "repository": "https://github.com/yourusername/ping-libsignal",
+  "author": "Your Name <you@example.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/yourusername/ping-libsignal",
+  "devDependencies": {
+    "expo-module-scripts": "^3.0.0"
+  },
+  "peerDependencies": {
+    "expo": "*"
+  }
+}
